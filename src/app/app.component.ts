@@ -9,6 +9,12 @@ export type d3SelectionBase = d3.Selection<
   HTMLElement | any,
   any
 >;
+
+interface COORDS {
+  x: number;
+  y: number;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -56,7 +62,8 @@ export class AppComponent implements AfterViewInit, OnInit {
       // tslint:disable-next-line:prefer-const
       let grp: d3SelectionBase | any = boxGroup
         .append('g')
-        .attr('class', 'group');
+        .attr('class', 'group')
+        .attr('transform', `translate(${0},${0})`);
       grp
         .append('rect')
         .attr('x', d * 300)
@@ -69,13 +76,15 @@ export class AppComponent implements AfterViewInit, OnInit {
     });
   }
   dragcontainer(): any {
-    return d3.drag().on('drag', (d, i, n) => {
+    return d3.drag().on('drag', (d: any, i, n) => {
       console.log(d, i, n, n[i]);
+      d.x = d3.event.x;
+      d.y = d3.event.y;
+      d3.select(n[i])
+        .attr('transform', 'translate(' + d3.event.x + ',' + d3.event.y + ')')
+        .raise();
 
-      d3.select(n[i]).attr(
-        'transform',
-        'translate(' + d3.event.x + ',' + d3.event.y + ')'
-      );
+      this.drawBoxes();
     });
   }
 
