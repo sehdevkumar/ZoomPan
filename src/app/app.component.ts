@@ -80,11 +80,13 @@ export class AppComponent implements AfterViewInit, OnInit {
       console.log(d, i, n, n[i]);
       d.x = d3.event.x;
       d.y = d3.event.y;
+      d3.select('.boxGroup').attr(
+        'transform',
+        'translate(' + -d3.event.x + ',' + 0 + ')'
+      );
       d3.select(n[i])
-        .attr('transform', 'translate(' + d3.event.x + ',' + d3.event.y + ')')
+        .attr('transform', 'translate(' + d3.event.x + ',' + 0 + ')')
         .raise();
-
-      this.drawBoxes();
     });
   }
 
