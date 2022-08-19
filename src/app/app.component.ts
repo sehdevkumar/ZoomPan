@@ -121,6 +121,9 @@ export class AppComponent implements AfterViewInit, OnInit {
           .duration(10)
           .attr('cursor', 'move')
           .attr('transform', 'translate(' + d3.event.x + ',' + 0 + ')');
+        console.log(
+          d3.select(n[i]).node()?.lastElementChild?.getAttribute('x')
+        );
 
         d3.select('.boxGroup')
           .transition()
@@ -131,21 +134,21 @@ export class AppComponent implements AfterViewInit, OnInit {
       .on('end', (d: any, i: number, n: any) => {
         let Mx = d3.mouse(n[i])[0];
         let My = d3.mouse(n[i])[1];
-        let rect = this.getGenrated2DRect(+Mx / 2, +My, 200, 50);
-        console.log(Mx, My, rect);
-        //  Check Overlapped rect To find
-        for (let instance of this.storeInstance) {
-          if (
-            this.doOverlap(
-              instance.topLeft,
-              instance.bottomRight,
-              rect.topLeft,
-              rect.bottomRight
-            )
-          ) {
-            console.log('Rect Matched');
-          }
-        }
+        // let rect = this.getGenrated2DRect(+Mx / 2, +My, 200, 50);
+        // console.log(Mx, My, rect);
+        // //  Check Overlapped rect To find
+        // for (let instance of this.storeInstance) {
+        //   if (
+        //     this.doOverlap(
+        //       instance.topLeft,
+        //       instance.bottomRight,
+        //       rect.topLeft,
+        //       rect.bottomRight
+        //     )
+        //   ) {
+        //     console.log('Rect Matched');
+        //   }
+        // }
 
         d.x = 0;
         d.y = 0;
