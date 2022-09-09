@@ -32,7 +32,7 @@ interface RectInstance {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements AfterViewInit, OnInit {
+export class AppComponent implements AfterViewInit {
   boxes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   view: d3SelectionBase | undefined | any;
   initialDraggedX = 0;
@@ -40,9 +40,6 @@ export class AppComponent implements AfterViewInit, OnInit {
   storeInstance: Array<RectInstance> = [];
 
   constructor() {}
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
-  }
 
   ngAfterViewInit(): void {
     this.drawArea();
@@ -77,12 +74,12 @@ export class AppComponent implements AfterViewInit, OnInit {
       .attr('class', 'boxGroup');
 
     this.boxes.forEach((d) => {
-      let x = d * 300;
-      let y = 0;
-      let w = 200;
-      let h = 50;
+      const x = d * 300;
+      const y = 0;
+      const w = 200;
+      const h = 50;
 
-      let grp: d3SelectionBase | any = boxGroup
+      const grp: d3SelectionBase | any = boxGroup
         .append('g')
         .attr('class', 'group')
         .attr('transform', `translate(${0},${0})`);
@@ -122,6 +119,11 @@ export class AppComponent implements AfterViewInit, OnInit {
           .attr('cursor', 'move')
           .attr('transform', 'translate(' + d3.event.x + ',' + 0 + ')');
 
+        d3.select(n[i]).node()?.lastElementChild?.setAttribute('stroke', 'red');
+        d3.select(n[i])
+          .node()
+          ?.lastElementChild?.setAttribute('stroke-width', '5px');
+
         d3.select('.boxGroup')
           .transition()
           .duration(1500)
@@ -129,33 +131,33 @@ export class AppComponent implements AfterViewInit, OnInit {
           .attr('transform', 'translate(' + -d3.event.x + ',' + 0 + ')');
       })
       .on('end', (d: any, i: number, n: any) => {
-        let Mx = d3.event.x;
-        let groupX = d3
+        const Mx = d3.event.x;
+
+        const groupX = d3
           .select(n[i])
           .node()
           ?.lastElementChild?.getAttribute('x');
-        let exactX = +groupX + Mx;
+        const exactX: any | number | undefined = +groupX + Mx;
+        const isLeftDirection = Mx < 0 ? true : false;
+        const isRightDirection = Mx > 0 ? true : false;
 
-        let rect = this.getGenrated2DRect(exactX, 0, 200, 50);
-        console.log(exactX, rect);
-        // Check Overlapped rect To find
-        for (let instance of this.storeInstance) {
-          if (
-            this.doOverlap(
-              instance.topLeft,
-              instance.bottomRight,
-              rect.topLeft,
-              rect.bottomRight
-            )
-          ) {
-            console.log('Rect Matched');
-          }
+        console.log(isLeftDirection, isRightDirection);
+        let pickedInstances: Array<RectInstance> = [];
+        if (isLeftDirection) {
+          pickedInstances = pickedInstances = this.storeInstance.filter(
+            (ins) => ins.x <= exactX
+          );
+        }
+
+        if (isRightDirection) {
+          pickedInstances = this.storeInstance.filter((ins) => ins.x >= exactX);
         }
 
         d.x = 0;
         d.y = 0;
         d3.select(n[i])
           .raise()
+          .classed('activeClassDragElement', false)
           .transition()
           .duration(1000)
 
@@ -168,6 +170,7 @@ export class AppComponent implements AfterViewInit, OnInit {
       });
   }
 
+  // tslint:disable-next-line:typedef
   doOverlap(
     l1: Point | any,
     r1: Point | any,
@@ -175,8 +178,9 @@ export class AppComponent implements AfterViewInit, OnInit {
     r2: Point | any
   ) {
     // if rectangle has area 0, no overlap
-    if (l1.x == r1.x || l1.y == r1.y || r2.x == l2.x || l2.y == r2.y)
+    if (l1.x === r1.x || l1.y === r1.y || r2.x === l2.x || l2.y === r2.y) {
       return false;
+    }
 
     // If one rectangle is on left side of other
     if (l1.x > r2.x || l2.x > r1.x) {
@@ -191,6 +195,7 @@ export class AppComponent implements AfterViewInit, OnInit {
     return true;
   }
 
+  // tslint:disable-next-line:typedef
   canRakeTranslate(x: number, y: number) {
     if (x > 3000) {
       return false;
@@ -203,14 +208,18 @@ export class AppComponent implements AfterViewInit, OnInit {
 
   getGenrated2DRect(x: number, y: number, w: number, h: number): RectInstance {
     return {
-      x: x,
-      y: y,
-      w: w,
-      h: h,
-      topLeft: { x: x, y: y },
-      topRight: { x: x + w, y: y },
-      bottomLeft: { x: x, y: y + h },
+      x,
+      y,
+      w,
+      h,
+      topLeft: { x, y },
+      topRight: { x: x + w, y },
+      bottomLeft: { x, y: y + h },
       bottomRight: { x: x + w, y: y + h },
     };
+  }
+  // tslint:disable-next-line:typedef
+  isEmpty(x: number | undefined): boolean {
+    return x === undefined || x === null;
   }
 }
