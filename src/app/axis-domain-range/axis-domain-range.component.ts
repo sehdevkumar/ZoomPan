@@ -41,7 +41,6 @@ export class AxisDomainRangeComponent implements OnInit, AfterViewInit {
     this.width = +this.view.attr('width');
     this.height = +this.view.attr('height');
     this.view
-      .append('svg')
       .attr('version', '1.1')
       .attr('xmlns', 'http://www.w3.org/2000/svg')
       .attr('xmlns:xlink', 'http://www.w3.org/1999/xlink')
@@ -53,15 +52,6 @@ export class AxisDomainRangeComponent implements OnInit, AfterViewInit {
 
     this.viewGroup = this.view.append('g').attr('class', 'viewGroup');
     this.rectGroup = this.view.append('g').attr('class', 'rectGroup');
-
-    const viewRect = this.rectGroup
-      .append('rect')
-      .attr('class', 'viewRect')
-      .attr('x', 0.5)
-      .attr('y', 0.5)
-      .attr('fill', 'red')
-      .attr('width', this.width - 1)
-      .attr('height', this.height - 1);
 
     this.xLinear = d3
       .scaleLinear()
@@ -86,6 +76,18 @@ export class AxisDomainRangeComponent implements OnInit, AfterViewInit {
       .append('g')
       .attr('class', 'axis axis--y')
       .call(this.yAxis);
+
+    this.rectGroup
+      .append('rect')
+      .lower()
+      .attr('class', 'viewRect')
+      .attr('x', 0.5)
+      .attr('y', 0.5)
+      .attr('fill', 'lime')
+      .attr('stroke', 'red')
+      .attr('width', this.width - 1)
+      .attr('height', this.height - 1);
+    this.viewGroup.raise();
   }
 
   zoomRegistered() {
@@ -93,8 +95,8 @@ export class AxisDomainRangeComponent implements OnInit, AfterViewInit {
       .zoom()
       .scaleExtent([0.1, 90])
       .translateExtent([
-        [-1000, -1000],
-        [1000, 1000],
+        [-40000, -40000],
+        [40000, 40000],
       ])
       .on('zoom', () => this.zoomed());
   }
