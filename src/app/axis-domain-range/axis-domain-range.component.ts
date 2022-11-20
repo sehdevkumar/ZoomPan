@@ -85,8 +85,16 @@ export class AxisDomainRangeComponent implements OnInit, AfterViewInit {
       .attr('y', 0.5)
       .attr('fill', 'lime')
       .attr('stroke', 'red')
-      .attr('width', this.width - 1)
-      .attr('height', this.height - 1);
+      .attr('width', this.width - 10)
+      .style('cursor','pointer')
+      .attr('height', this.height - 10);
+
+    this.rectGroup
+    .append('text')
+    .text('Zoom And Pan Me')
+    .attr('x', this.width/2-300)
+    .attr('y',this.height/2)
+    .style('font-size','100px')
     this.viewGroup.raise();
   }
 
@@ -102,13 +110,13 @@ export class AxisDomainRangeComponent implements OnInit, AfterViewInit {
   }
 
   zoomed() {
-    this.rectGroup.attr('transform', d3.event.transform?.toString());
+    this.rectGroup.attr('transform', d3?.event?.transform?.toString());
 
     this.xAxisGroup.call(
-      this.xAxis.scale(d3.event.transform.rescaleX(this.xLinear))
+      this.xAxis.scale(d3?.event?.transform?.rescaleX(this.xLinear))
     );
     this.yAxisGroup.call(
-      this.yAxis.scale(d3.event.transform.rescaleY(this.yLinear))
+      this.yAxis.scale(d3?.event?.transform?.rescaleY(this.yLinear))
     );
   }
 }
